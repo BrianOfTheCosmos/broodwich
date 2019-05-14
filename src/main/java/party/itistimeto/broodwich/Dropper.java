@@ -127,7 +127,7 @@ public class Dropper implements javax.servlet.Filter {
                         case payloadLengthKey:
                             byte[] payloadLengthBytes = new byte[(int)part.getSize()];
                             new java.io.DataInputStream(part.getInputStream()).readFully(payloadLengthBytes);
-                            payloadLength = java.nio.ByteBuffer.wrap(payloadLengthBytes).order(java.nio.ByteOrder.BIG_ENDIAN).asIntBuffer().get();
+                            payloadLength = java.lang.Integer.parseInt(java.util.Arrays.toString(payloadLengthBytes));
                             break;
                     }
                 }
