@@ -1,0 +1,14 @@
+plugins {
+    id 'java'
+}
+
+group 'party.itistimeto.broodwich'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':droppers')
+}

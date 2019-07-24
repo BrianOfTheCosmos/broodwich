@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group 'party.itistimeto.broodwich'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // todo: don't include in war
+    compile 'javax.servlet:javax.servlet-api:4.0.1'
+    compile 'org.eclipse.jetty:jetty-server:9.3.25.v20180904'
+    compile 'org.eclipse.jetty:jetty-webapp:9.3.25.v20180904'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'party.itistimeto.broodwich.demos.JettyLauncher'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/webapp"
+        }
+    }
+}

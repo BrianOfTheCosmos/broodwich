@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'party.itistimeto.broodwich.modules'
+version '1.0-SNAPSHOT'
+
+compileJava   {
+    sourceCompatibility = '1.6'
+    targetCompatibility = '1.6'
+    // necessary to use com.sun classes when compiling on jdk11
+    options.bootClasspath = "$System.env.JAVA_HOME/jre/lib/rt.jar"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly project(':droppers')
+}

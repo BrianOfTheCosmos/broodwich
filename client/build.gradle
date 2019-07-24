@@ -1,0 +1,24 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':payloads')
+    compile project(':droppers')
+    compile project(':modules')
+    compile 'info.picocli:picocli:4.0.0-beta-2'
+    compile 'com.mashape.unirest:unirest-java:1.4.9'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'party.itistimeto.broodwich.client.Client'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
