@@ -18,7 +18,7 @@ repositories {
 dependencies {
     compileOnly 'org.apache.tomcat.embed:tomcat-embed-core:9.0.12'
     compileOnly 'org.eclipse.jetty:jetty-webapp:9.3.25.v20180904'
-    compileOnly 'org.apache.struts:struts2-core:2.5.10'
+    compile 'org.apache.struts:struts2-core:2.5.10'
     // todo: why is this necessary?
     compile 'javax.servlet:javax.servlet-api:4.0.1'
 }

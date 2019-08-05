@@ -131,8 +131,10 @@ public class Client implements Callable<Integer> {
         var request = Unirest.post(url)
                 .field(BroodwichFilter.moduleIdKey, normalizeClassName(name, "modules"))
                 .field(BroodwichFilter.passwordKey, password);
-        for(var p : params) {
-            request = request.field(BroodwichFilter.moduleParamsKey, p);
+        if (params != null) {
+            for(var p : params) {
+                request = request.field(BroodwichFilter.moduleParamsKey, p);
+            }
         }
 
         return request.asString();

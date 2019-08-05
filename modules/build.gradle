@@ -9,6 +9,7 @@ compileJava   {
     sourceCompatibility = '1.6'
     targetCompatibility = '1.6'
     // necessary to use com.sun classes when compiling on jdk11
+    // https://stackoverflow.com/questions/7779486/gradle-how-to-compile-classes-that-use-com-sun-xml-internal-bind
     options.bootClasspath = "$System.env.JAVA_HOME/jre/lib/rt.jar"
 }
 

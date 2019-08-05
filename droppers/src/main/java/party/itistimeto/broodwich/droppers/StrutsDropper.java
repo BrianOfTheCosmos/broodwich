@@ -79,6 +79,11 @@ public class StrutsDropper implements Interceptor {
         // todo: same as with init()
         filter.doFilter(req, resp, null);
 
-        return null;
+        if(resp.getHeaderNames().contains("X-Modified-By")) {
+            // don't invoke the action, so we can keep the broodwich-modified resp body
+            return null;
+        }
+
+        return invocation.invoke();
     }
 }

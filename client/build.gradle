@@ -13,6 +13,7 @@ dependencies {
 }
 
 jar {
+    archiveName 'broodwich.jar'
     manifest {
         attributes(
                 'Main-Class': 'party.itistimeto.broodwich.client.Client'

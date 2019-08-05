@@ -3,11 +3,13 @@ package party.itistimeto.broodwich.modules;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
 
 public class cmd {
-    public static String run(String... params) {
+    public static String run(List<String> params) {
         try {
-            Process proc = Runtime.getRuntime().exec(params);
+            // todo: p1: figure out reason for hanging!!! (e.g., with cmd /k)
+            Process proc = Runtime.getRuntime().exec(params.toArray(new String[0]));
 
             BufferedReader stdout = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             BufferedReader stderr = new BufferedReader(new InputStreamReader(proc.getErrorStream()));

