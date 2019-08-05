@@ -1,8 +1,8 @@
 package party.itistimeto.broodwich.client;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
 import party.itistimeto.broodwich.droppers.BroodwichFilter;
 import party.itistimeto.broodwich.payloads.AbstractPayload;
 import picocli.CommandLine;
@@ -128,10 +128,14 @@ public class Client implements Callable<Integer> {
     }
 
     private static HttpResponse<String> doModuleRequest(String name, String url, String password, String... params) throws UnirestException {
+        if(System.getProperties().containsKey("http.proxyHost") && System.getProperties().containsKey("http.proxyPort")) {
+            Unirest.config().proxy(System.getProperty("http.proxyHost"), Integer.parseInt(System.getProperty("http.proxyPort")));
+        }
+
         var request = Unirest.post(url)
                 .field(BroodwichFilter.moduleIdKey, normalizeClassName(name, "modules"))
                 .field(BroodwichFilter.passwordKey, password);
-        if (params != null) {
+        if(params != null) {
             for(var p : params) {
                 request = request.field(BroodwichFilter.moduleParamsKey, p);
             }
