@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2019 Brian D. Hysell
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
 plugins {
     id 'java'
 }
@@ -16,7 +24,7 @@ repositories {
 
 dependencies {
     compileOnly 'org.apache.tomcat.embed:tomcat-embed-core:9.0.12'
-    compileOnly 'org.eclipse.jetty:jetty-webapp:9.3.25.v20180904'
+    compileOnly 'org.eclipse.jetty:jetty-webapp:9.4.12.v20180830'
     compileOnly 'org.apache.struts:struts2-core:2.5.10'
     compile 'javax.servlet:javax.servlet-api:4.0.1'
 }
