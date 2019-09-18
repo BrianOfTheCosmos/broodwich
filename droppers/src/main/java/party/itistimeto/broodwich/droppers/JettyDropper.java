@@ -1,9 +1,7 @@
 package party.itistimeto.broodwich.droppers;
 
 import org.eclipse.jetty.servlet.FilterHolder;
-import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import sun.awt.windows.ThemeReader;
 
 import javax.servlet.DispatcherType;
 import java.security.PrivilegedExceptionAction;
