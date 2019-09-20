@@ -23,8 +23,8 @@ repositories {
 dependencies {
     // todo: don't include in war
     compile 'javax.servlet:javax.servlet-api:4.0.1'
-    compile 'org.eclipse.jetty:jetty-server:9.3.25.v20180904'
-    compile 'org.eclipse.jetty:jetty-webapp:9.3.25.v20180904'
+    compile "org.eclipse.jetty:jetty-server:$jettyVersion"
+    compile "org.eclipse.jetty:jetty-webapp:$jettyVersion"
 }
 
 jar {

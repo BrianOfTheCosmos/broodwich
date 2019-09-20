@@ -19,6 +19,8 @@ repositories {
     mavenCentral()
 }
 
+ext.jettyVersion = "9.4.12.v20180830"
+
 dependencies {
     
 }
