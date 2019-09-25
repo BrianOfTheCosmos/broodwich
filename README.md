@@ -7,9 +7,9 @@ eliminate.
 
 ## Summary
 
-Broodwich is an in-band, in-memory implant for Java post-exploitation. It installs a malicious servlet filter or Struts 
-interceptor in a vulnerable web application, which can then surveil requests and take commands over the application's 
-normal HTTP(S) communication channel.
+Broodwich is an in-band, in-memory implant for Java post-exploitation in penetration tests and red team exercises. It 
+installs a malicious servlet filter or Struts interceptor in a vulnerable web application, which can then surveil 
+requests and take commands over the application's normal HTTP(S) communication channel.
 
 ## Goals
 * **Steal sensitive data** by regex-matching parameter names and saving their values for later retrieval.
@@ -74,7 +74,7 @@ The JavaScript needs to be generated separately from the OGNL.
 
 #### Other options
 
-The path pattern is used by filter-based droppers (TomcatDropper and TomcatDropper) to determine which requests the filter 
+The path pattern is used by filter-based droppers (TomcatDropper and JettyDropper) to determine which requests the filter 
 will affect. Consider leaving the original RCE location out of the path pattern to give yourself the opportunity to remove 
 the filter should something go wrong (a formal "un-dropper" mechanism is planned but not yet developed). It has no effect 
 on the Struts interceptor dropper.
@@ -118,6 +118,9 @@ amounts of disk space)
 * Test / demo targets need to be cleaned up and/or moved to a separate repo
 * And so on... when I said experimental, I meant it
 
-## License
+# License & Disclaimer
 
-Copyright 2019 Brian D. Hysell, licensed under the MPL 2.0
+Copyright 2019 Brian D. Hysell, licensed under the MPL 2.0.
+
+Broodwich is a penetration testing / red teaming tool. Use only against systems you have received explicit permission
+to test.
