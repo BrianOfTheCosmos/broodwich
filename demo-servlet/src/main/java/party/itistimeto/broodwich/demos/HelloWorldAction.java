@@ -19,17 +19,29 @@
 
 package party.itistimeto.broodwich.demos;
 
+import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionSupport;
+import org.apache.struts2.ServletActionContext;
 
-//import org.eclipse.jetty.webapp.WebAppContext;
+import java.beans.XMLDecoder;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.StandardCharsets;
 
 public class HelloWorldAction extends ActionSupport {
     private MessageStore messageStore;
 
     public String execute() {
+        String xmlVal = ServletActionContext.getRequest().getParameter("xml");
+        if(xmlVal != null) {
+            ByteArrayInputStream xmlBytes = new ByteArrayInputStream(xmlVal.getBytes(StandardCharsets.UTF_8));
+            XMLDecoder xmlDec = new XMLDecoder(xmlBytes);
+            Object result = xmlDec.readObject();
+            xmlDec.close();
+        }
+
         messageStore = new MessageStore() ;
 
-        return SUCCESS;
+        return Action.SUCCESS;
     }
 
     public MessageStore getMessageStore() {

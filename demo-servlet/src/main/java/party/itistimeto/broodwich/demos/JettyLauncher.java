@@ -9,6 +9,7 @@
 package party.itistimeto.broodwich.demos;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.Configuration;
 import org.eclipse.jetty.webapp.WebAppContext;
 
 public class JettyLauncher {
@@ -18,10 +19,18 @@ public class JettyLauncher {
 
             Server server = new Server(8080);
 
-            String rootPath = JettyLauncher.class.getClassLoader().getResource(".").toString();
-            WebAppContext webapp = new WebAppContext(rootPath + "../../../src/main/webapp", "");
-            server.setHandler(webapp);
+            WebAppContext webapp = new WebAppContext(Thread.currentThread().getContextClassLoader().getResource("webapp").toURI().toString(), "");
+            // following jsp setup from http://www.eclipse.org/jetty/documentation/current/embedded-examples.html#embedded-webapp-jsp
+            Configuration.ClassList classlist = Configuration.ClassList
+                    .setServerDefault(server);
+            classlist.addBefore(
+                    "org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
+                    "org.eclipse.jetty.annotations.AnnotationConfiguration");
+            webapp.setAttribute(
+                    "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+                    ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$");
 
+            server.setHandler(webapp);
             server.start();
             server.join();
         } catch (Exception e) {

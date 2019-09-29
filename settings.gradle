@@ -12,6 +12,5 @@ include 'client'
 include 'droppers'
 include 'payloads'
 include 'demo-servlet'
-include 'demo-struts2'
 include 'modules'
 

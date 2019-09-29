@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -16,15 +17,23 @@
  * specific language governing permissions and limitations
  * under the License.
   -->
-<!DOCTYPE html>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ taglib prefix="s" uri="/struts-tags" %>
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h2><s:property value="messageStore.message" /></h2>
-  </body>
-</html>
+
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+
+    <constant name="struts.devMode" value="true" />
+
+    <package name="basicstruts2" extends="struts-default">
+        <action name="index">
+            <result>/index.htm</result>
+        </action>
+
+        <action name="hello" class="party.itistimeto.broodwich.demos.HelloWorldAction" method="execute">
+            <result name="success">/HelloWorld.htm</result>
+        </action>
+    </package>
+
+</struts>
