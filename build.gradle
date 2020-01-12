@@ -6,8 +6,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-plugins {
-    id 'java'
+
+apply plugin: 'java'
+
+test {
+    useJUnitPlatform()
 }
 
 group 'party.itistimeto.broodwich'
@@ -15,12 +18,22 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 11
 
-repositories {
-    mavenCentral()
-}
-
 ext.jettyVersion = "9.4.12.v20180830"
 
-dependencies {
-    
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.2'
+        testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.5.2'
+        testImplementation group: 'org.springframework', name: 'spring-test', version: '5.2.2.RELEASE'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }

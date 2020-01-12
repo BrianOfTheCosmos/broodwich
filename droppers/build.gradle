@@ -27,4 +27,6 @@ dependencies {
     compileOnly "org.eclipse.jetty:jetty-webapp:$jettyVersion"
     compileOnly 'org.apache.struts:struts2-core:2.5.10'
     compile 'javax.servlet:javax.servlet-api:4.0.1'
+    testImplementation project(':modules')
+    testImplementation project(':payloads')
 }

