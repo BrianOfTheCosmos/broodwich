@@ -15,13 +15,14 @@ import party.itistimeto.broodwich.droppers.BroodwichFilter;
 import party.itistimeto.broodwich.payloads.AbstractPayload;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.zip.GZIPOutputStream;
 
@@ -31,16 +32,19 @@ import java.util.zip.GZIPOutputStream;
 )
 public class Client implements Callable<Integer> {
     public static void main(String... args) {
-        System.exit(new CommandLine(new Client()).execute(args));
+        CommandLine cl = new CommandLine(new Client());
+        cl.registerConverter(Map.class, new OptionsMapConverter());
+        System.exit(cl.execute(args));
     }
 
     @Command
     public int payload(
+            @Option(names = { "-o", "--options" }) Map<String, String> options,
             @Parameters(index = "0") String payloadClassName,
             @Parameters(index = "1") String dropperClassName,
             @Parameters(index = "2") String pathPattern,
             @Parameters(index = "3") String password
-    ) {
+            ) {
         Class payloadClass;
         Class dropperClass;
         try {
@@ -52,7 +56,7 @@ public class Client implements Callable<Integer> {
         }
 
         try {
-            AbstractPayload payload = (AbstractPayload) payloadClass.getDeclaredConstructor(String.class, Class.class, String.class).newInstance(pathPattern, dropperClass, password);
+            AbstractPayload payload = (AbstractPayload) payloadClass.getDeclaredConstructor(String.class, Class.class, String.class, Map.class).newInstance(pathPattern, dropperClass, password, options);
             System.out.println(payload.toString());
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();

@@ -8,12 +8,9 @@
 
 package party.itistimeto.broodwich.payloads;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 import java.util.zip.GZIPOutputStream;
 
 // todo: gzip support
@@ -21,6 +18,7 @@ import java.util.zip.GZIPOutputStream;
 public abstract class AbstractPayload {
     final String urlPattern;
     final String password;
+    final Map<String, String> options;
     final Class filterClass = party.itistimeto.broodwich.droppers.BroodwichFilter.class;
     final byte[] filterBytecode;
     final byte[] compressedFilterBytecode;
@@ -28,7 +26,7 @@ public abstract class AbstractPayload {
     final byte[] dropperBytecode;
     final byte[] compressedDropperBytecode;
 
-    AbstractPayload(String urlPattern, Class dropperClass, String password) throws NoSuchAlgorithmException, URISyntaxException, IOException {
+    AbstractPayload(String urlPattern, Class dropperClass, String password, Map<String, String> options) throws IOException {
         this.urlPattern = urlPattern;
         this.dropperClass = dropperClass;
 
@@ -48,6 +46,7 @@ public abstract class AbstractPayload {
         this.compressedDropperBytecode = bos.toByteArray();
 
         this.password = password;
+        this.options = options;
     }
 
     // todo: move to util class
@@ -60,7 +59,7 @@ public abstract class AbstractPayload {
 
     public abstract byte[] toBytes();
 
-    static String getResourceText(String resourceName) throws URISyntaxException, IOException {
+    static String getResourceText(String resourceName) throws IOException {
         return new String(getResourceBytes(resourceName));
     }
 

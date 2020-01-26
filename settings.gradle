@@ -13,4 +13,5 @@ include 'droppers'
 include 'payloads'
 include 'demo-servlet'
 include 'modules'
+include 'deserialization'
 

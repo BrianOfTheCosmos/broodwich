@@ -11,18 +11,18 @@ package party.itistimeto.broodwich.payloads;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
-import java.text.MessageFormat;
+import java.util.Map;
 
 public class OGNLPayload extends JavascriptPayload {
-    public OGNLPayload(String urlPattern, Class dropperClass, String password) throws NoSuchAlgorithmException, IOException, URISyntaxException {
-        super(urlPattern, dropperClass, password);
+    public OGNLPayload(String urlPattern, Class dropperClass, String password, Map<String, String> options) throws NoSuchAlgorithmException, IOException, URISyntaxException {
+        super(urlPattern, dropperClass, password, options);
     }
 
     @Override
     public String toString() {
         try {
             return AbstractPayload.getResourceText("OGNLPayloadTemplate.ognl");
-        } catch (URISyntaxException | IOException e) {
+        } catch (IOException e) {
             return e.getMessage(); // don't @ me
         }
     }

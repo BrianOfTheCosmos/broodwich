@@ -14,11 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.Base64;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class JavascriptPayload extends AbstractPayload {
-    public JavascriptPayload(String urlPattern, Class dropperClass, String password) throws NoSuchAlgorithmException, IOException, URISyntaxException {
-        super(urlPattern, dropperClass, password);
+    public JavascriptPayload(String urlPattern, Class dropperClass, String password, Map<String, String> options) throws NoSuchAlgorithmException, IOException, URISyntaxException {
+        super(urlPattern, dropperClass, password, options);
     }
 
     @Override
@@ -36,7 +37,7 @@ public class JavascriptPayload extends AbstractPayload {
             // fyi: https://stackoverflow.com/questions/1187093/can-i-escape-braces-in-a-java-messageformat
             var js = MessageFormat.format(jsTemplate, templateParams);
             return js.lines().filter(line -> !line.startsWith("//")).collect(Collectors.joining());
-        } catch (IOException | URISyntaxException e) {
+        } catch (IOException e) {
             return e.getMessage(); // don't @ me
         }
     }
