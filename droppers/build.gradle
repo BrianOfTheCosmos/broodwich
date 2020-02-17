@@ -18,10 +18,6 @@ compileJava   {
 group 'party.itistimeto.broodwich'
 version '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compileOnly 'org.apache.tomcat.embed:tomcat-embed-core:9.0.12'
     compileOnly "org.eclipse.jetty:jetty-webapp:$jettyVersion"
