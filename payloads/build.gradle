@@ -13,10 +13,6 @@ plugins {
 group 'party.itistimeto.broodwich'
 version '1.0-SNAPSHOT'
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     compileOnly project(':droppers')
     compile project(':deserialization')
