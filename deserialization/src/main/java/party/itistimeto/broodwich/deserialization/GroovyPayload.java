@@ -3,6 +3,7 @@ package party.itistimeto.broodwich.deserialization;
 import groovy.util.Eval;
 import org.codehaus.groovy.runtime.ConvertedClosure;
 import org.codehaus.groovy.runtime.MethodClosure;
+import party.itistimeto.broodwich.util.Util;
 
 import java.lang.reflect.Proxy;
 import java.util.Comparator;

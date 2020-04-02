@@ -8,6 +8,8 @@
 
 package party.itistimeto.broodwich.payloads;
 
+import party.itistimeto.broodwich.util.Util;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -25,7 +27,7 @@ public class JavascriptPayload extends AbstractPayload {
     @Override
     public String toString() {
         try {
-            var jsTemplate = AbstractPayload.getResourceText("JavascriptPayloadTemplate.js");
+            var jsTemplate = Util.getResourceText("JavascriptPayloadTemplate.js");
             var templateParams = new Object[]{
                 this.filterClass.getName(),
                 this.dropperClass.getName(),

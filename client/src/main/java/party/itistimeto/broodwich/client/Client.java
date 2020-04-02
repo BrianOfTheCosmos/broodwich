@@ -13,6 +13,7 @@ import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import party.itistimeto.broodwich.droppers.BroodwichFilter;
 import party.itistimeto.broodwich.payloads.AbstractPayload;
+import party.itistimeto.broodwich.util.Util;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -33,7 +34,6 @@ import java.util.zip.GZIPOutputStream;
 public class Client implements Callable<Integer> {
     public static void main(String... args) {
         CommandLine cl = new CommandLine(new Client());
-        cl.registerConverter(Map.class, new OptionsMapConverter());
         System.exit(cl.execute(args));
     }
 
@@ -73,7 +73,7 @@ public class Client implements Callable<Integer> {
     ) {
         try {
             var moduleClass = Class.forName(normalizeClassName(module, "modules"));
-            var moduleByteCode = AbstractPayload.getResourceBytes(AbstractPayload.classToResource(moduleClass));
+            var moduleByteCode = Util.getResourceBytes(Util.classToResource(moduleClass));
 
             var bos = new ByteArrayOutputStream();
             var gos = new GZIPOutputStream(bos);

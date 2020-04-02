@@ -8,6 +8,8 @@
 
 package party.itistimeto.broodwich.payloads;
 
+import party.itistimeto.broodwich.util.Util;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +25,7 @@ public class XMLDecoderPayload extends JavascriptPayload {
     @Override
     public String toString() {
         try {
-            return MessageFormat.format(AbstractPayload.getResourceText("XMLDecoderPayloadTemplate.xml"), super.toString());
+            return MessageFormat.format(Util.getResourceText("XMLDecoderPayloadTemplate.xml"), super.toString());
         } catch (IOException e) {
             return e.getMessage(); // don't @ me
         }

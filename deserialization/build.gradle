@@ -8,6 +8,7 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 dependencies {
+    implementation project(':util')
     implementation 'org.codehaus.groovy:groovy-all:2.3.9'
     implementation 'org.apache.commons:commons-collections4:4.0'
     implementation 'commons-collections:commons-collections:3.1'

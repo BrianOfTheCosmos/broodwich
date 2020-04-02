@@ -8,6 +8,8 @@
 
 package party.itistimeto.broodwich.payloads;
 
+import party.itistimeto.broodwich.util.Util;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
@@ -21,7 +23,7 @@ public class OGNLPayload extends JavascriptPayload {
     @Override
     public String toString() {
         try {
-            return AbstractPayload.getResourceText("OGNLPayloadTemplate.ognl");
+            return Util.getResourceText("OGNLPayloadTemplate.ognl");
         } catch (IOException e) {
             return e.getMessage(); // don't @ me
         }

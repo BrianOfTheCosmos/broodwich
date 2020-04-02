@@ -8,6 +8,8 @@
 
 package party.itistimeto.broodwich.payloads;
 
+import party.itistimeto.broodwich.util.Util;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Map;
@@ -31,8 +33,8 @@ public abstract class AbstractPayload {
         this.dropperClass = dropperClass;
 
         ClassLoader cl = this.getClass().getClassLoader();
-        this.filterBytecode = getResourceBytes(classToResource(filterClass));
-        this.dropperBytecode = getResourceBytes(classToResource(dropperClass));
+        this.filterBytecode = Util.getResourceBytes(Util.classToResource(filterClass));
+        this.dropperBytecode = Util.getResourceBytes(Util.classToResource(dropperClass));
 
         var bos = new ByteArrayOutputStream();
         var gis = new GZIPOutputStream(bos);
@@ -49,22 +51,9 @@ public abstract class AbstractPayload {
         this.options = options;
     }
 
-    // todo: move to util class
-    public static String classToResource(Class clazz) {
-        return clazz.getName().replace('.', '/') + ".class";
-    }
-
     @Override
     public abstract String toString();
 
     public abstract byte[] toBytes();
 
-    static String getResourceText(String resourceName) throws IOException {
-        return new String(getResourceBytes(resourceName));
-    }
-
-    // todo: move to utility class
-    public static byte[] getResourceBytes(String resourceName) throws IOException {
-        return AbstractPayload.class.getClassLoader().getResourceAsStream(resourceName).readAllBytes();
-    }
 }

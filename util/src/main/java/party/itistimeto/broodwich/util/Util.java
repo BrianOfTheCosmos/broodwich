@@ -1,4 +1,4 @@
-package party.itistimeto.broodwich.deserialization;
+package party.itistimeto.broodwich.util;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -54,5 +54,17 @@ public class Util {
         } catch (IOException e) {
             return new byte[0];
         }
+    }
+
+    public static String classToResource(Class clazz) {
+        return clazz.getName().replace('.', '/') + ".class";
+    }
+
+    public static String getResourceText(String resourceName) throws IOException {
+        return new String(getResourceBytes(resourceName));
+    }
+
+    public static byte[] getResourceBytes(String resourceName) throws IOException {
+        return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceName).readAllBytes();
     }
 }

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import party.itistimeto.broodwich.payloads.AbstractPayload;
+import party.itistimeto.broodwich.util.Util;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
@@ -61,7 +61,7 @@ public class BroodwichFilterTest {
         loadReq.addParameter(BroodwichFilter.passwordKey, PW);
 
         var moduleClass = Class.forName(CMD_MODULE);
-        var moduleByteCode = AbstractPayload.getResourceBytes(AbstractPayload.classToResource(moduleClass));
+        var moduleByteCode = Util.getResourceBytes(Util.classToResource(moduleClass));
         var bos = new ByteArrayOutputStream();
         var gos = new GZIPOutputStream(bos);
         gos.write(moduleByteCode);

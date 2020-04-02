@@ -16,4 +16,5 @@ version '1.0-SNAPSHOT'
 dependencies {
     compileOnly project(':droppers')
     compile project(':deserialization')
+    compile project(':util')
 }
